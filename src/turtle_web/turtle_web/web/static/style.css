@@ -1,0 +1,211 @@
+:root {
+  --bg: #0f1420;
+  --card: #182033;
+  --card2: #1f2a44;
+  --text: #e6e9f2;
+  --muted: #8a93ad;
+  --accent: #4fd1a5;
+  --accent2: #5aa9ff;
+  --danger: #ff6b6b;
+  --border: #2a3650;
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  background: var(--bg); color: var(--text); font-size: 14px;
+}
+header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 20px; border-bottom: 1px solid var(--border); background: var(--card);
+}
+h1 { margin: 0; font-size: 20px; }
+h1 .sub { font-size: 12px; color: var(--muted); font-weight: normal; margin-left: 10px; }
+h2 { margin: 0 0 10px; font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
+.status { display: flex; align-items: center; gap: 8px; color: var(--muted); }
+.dot { width: 10px; height: 10px; border-radius: 50%; background: #666; }
+.dot.on { background: var(--accent); box-shadow: 0 0 8px var(--accent); }
+.dot.off { background: var(--danger); }
+
+/* Trang khoa theo chieu cao cua so: khong cuon trang, chi cuon ben trong log */
+body { display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+header { flex: none; }
+main {
+  flex: 1; min-height: 0; width: 100%;
+  display: grid; grid-template-columns: minmax(0, 1fr) 520px; gap: 16px;
+  padding: 16px 20px; max-width: 1900px; margin: 0 auto; box-sizing: border-box;
+}
+.left, .side { min-height: 0; }
+.side { overflow: hidden; }
+.side .card { flex: none; }
+.side .log-card { flex: 1; min-height: 90px; display: flex; flex-direction: column; }
+.side .log-card pre { flex: 1; height: auto; min-height: 0; }
+@media (max-width: 1000px) {
+  body { height: auto; overflow: auto; }
+  main { grid-template-columns: 1fr; }
+  .side .log-card pre { height: 140px; }
+}
+.side .card { padding: 12px 14px; }
+.side h2 { font-size: 12px; }
+
+.card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px;
+}
+.card-head { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.card-head h2 { margin: 0; flex: 1; }
+.side { display: flex; flex-direction: column; gap: 14px; }
+
+.map-wrap { position: relative; width: 100%; margin: 0 auto; border-radius: 8px; overflow: hidden;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.08), 0 4px 24px rgba(0,0,0,.35); }
+#map { width: 100%; display: block; background: #212445; cursor: crosshair; }
+#overlay { position: absolute; inset: 0; width: 100%; height: 100%; pointer-events: none; }
+.badge { font-size: 11px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--border); color: var(--muted); }
+.badge.gpu { color: var(--accent); border-color: var(--accent); }
+.badge.cpu { color: #f0c060; border-color: #f0c060; }
+.hint { color: var(--muted); font-size: 12px; margin-top: 8px; }
+
+.pose { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; margin-top: 10px; }
+.pose > div { background: var(--card2); border-radius: 8px; padding: 4px 8px; display: flex; justify-content: space-between; gap: 6px; font-size: 13px; }
+.pose .k { color: var(--muted); }
+.pose .v { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+
+.ctl { display: flex; gap: 14px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+.dpad { display: grid; grid-template-columns: repeat(3, 46px); gap: 5px; }
+.dpad button { height: 46px; font-size: 18px; padding: 0; }
+.dpad .stop { background: #3a2a2a; border-color: var(--danger); color: var(--danger); }
+.joy-wrap { text-align: center; }
+#joy { border-radius: 50%; background: var(--card2); touch-action: none; cursor: grab; }
+
+.sliders { margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+.sliders label { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 8px;
+  color: var(--muted); font-size: 12px; background: var(--card2); border-radius: 8px; padding: 6px 10px; }
+.sliders .sl-name { white-space: nowrap; }
+.sliders .sl-val { white-space: nowrap; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; }
+.sliders .sl-val b { color: var(--text); font-weight: 600; }
+input[type=range] { width: 100%; min-width: 60px; accent-color: var(--accent); margin: 0; }
+@media (max-width: 1000px) and (min-width: 481px) { .sliders { grid-template-columns: 1fr 1fr; } }
+.side .sliders { grid-template-columns: 1fr; }
+
+button {
+  background: var(--card2); color: var(--text); border: 1px solid var(--border);
+  border-radius: 8px; padding: 8px 12px; cursor: pointer; font-size: 14px;
+  transition: background .1s, transform .05s;
+}
+button:hover { background: #28365a; }
+button:active, button.active { transform: scale(.96); background: var(--accent2); color: #000; }
+button.danger { border-color: var(--danger); color: var(--danger); }
+button.danger:hover { background: #3a2a2a; }
+button.ghost { background: transparent; border-color: transparent; color: var(--muted); padding: 4px 8px; }
+button.ghost:hover { color: var(--text); }
+
+.row { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 8px; }
+.row:last-child { margin-bottom: 0; }
+.row label { display: flex; align-items: center; gap: 6px; color: var(--muted); }
+input[type=text], input:not([type]), input[type=number], select {
+  background: var(--bg); color: var(--text); border: 1px solid var(--border);
+  border-radius: 8px; padding: 7px 10px; font-size: 14px;
+}
+input:not([type]) { flex: 1; min-width: 120px; }
+input[type=color] { width: 36px; height: 28px; padding: 0; border: 1px solid var(--border); border-radius: 6px; background: none; }
+.chk { display: flex; align-items: center; gap: 6px; color: var(--muted); cursor: pointer; }
+
+.log-card pre {
+  margin: 0; height: 120px; overflow: auto; font-size: 12px; color: var(--muted);
+  background: var(--bg); border-radius: 8px; padding: 8px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; white-space: pre-wrap;
+}
+.log-card .err { color: var(--danger); }
+.log-card .ok { color: var(--accent); }
+
+/* ---- pin */
+.left { display: flex; flex-direction: column; gap: 14px; }
+.batt { display: grid; grid-template-columns: 220px 1fr; gap: 16px; align-items: start; }
+@media (max-width: 560px) { .batt { grid-template-columns: 1fr; } }
+.soc-bar { position: relative; height: 64px; border-radius: 10px; background: var(--bg); border: 1px solid var(--border); overflow: hidden; }
+.soc-bar::after { content: ''; position: absolute; right: -7px; top: 18px; width: 6px; height: 18px; background: var(--border); border-radius: 0 3px 3px 0; }
+.soc-fill { height: 100%; width: 0%; background: var(--accent); transition: width .6s ease, background .6s; }
+.soc-fill.warn { background: #f0c060; }
+.soc-fill.crit { background: var(--danger); animation: blink 1s steps(2) infinite; }
+@keyframes blink { 50% { opacity: .55; } }
+.soc-pct { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center;
+  font-size: 26px; font-weight: 700; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; text-shadow: 0 1px 3px rgba(0,0,0,.6); }
+.soc-sub { margin-top: 6px; font-size: 12px; color: var(--muted); text-align: center; }
+.batt-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+.bt { background: var(--card2); border-radius: 8px; padding: 6px 10px; display: grid; grid-template-columns: 1fr auto; gap: 2px 8px; align-items: center; }
+.bt .k { color: var(--muted); font-size: 12px; }
+.bt .v { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; color: var(--muted); font-size: 12px; text-align: right; }
+.bt .v b { color: var(--text); font-size: 17px; font-weight: 600; }
+.bt .spark { grid-column: 1 / -1; width: 100%; height: 26px; display: block; }
+.badge.warn { color: #f0c060; border-color: #f0c060; }
+.badge.bad { color: var(--danger); border-color: var(--danger); }
+
+/* ---- di dong / man hinh hep */
+button, .dpad button, #joy { touch-action: manipulation; -webkit-tap-highlight-color: transparent; user-select: none; -webkit-user-select: none; }
+.dpad button, #joy { touch-action: none; }
+@media (max-width: 1000px) {
+  header { padding: 8px 12px; }
+  h1 { font-size: 16px; }
+  h1 .sub { display: none; }
+  main { padding: 10px 12px; gap: 10px; }
+  .card { padding: 10px 12px; border-radius: 10px; }
+  .card-head { flex-wrap: wrap; gap: 6px 10px; }
+  .hint { display: none; }
+  /* thu tu cot phai: dieu khien truoc, roi rua/pose, hanh dong, log */
+  .side .log-card { order: 9; }            /* hanh dong -> dieu khien -> log */
+  .side { overflow: visible; }
+  /* nut to cho ngon tay */
+  button { min-height: 42px; padding: 8px 14px; font-size: 15px; }
+  .dpad { grid-template-columns: repeat(3, 60px); gap: 8px; }
+  .dpad button { height: 60px; font-size: 24px; }
+  #joy { width: 150px; height: 150px; }
+  .ctl { justify-content: space-around; }
+  /* moi slider 1 hang rieng, thanh keo dai het chieu ngang */
+  .sliders { grid-template-columns: 1fr; gap: 8px; }
+  .sliders label { grid-template-columns: auto 1fr auto; padding: 8px 12px; font-size: 13px; }
+  .sliders .sl-name { min-width: 96px; }
+  input[type=range] { height: 32px; }
+  input, select { font-size: 16px; }       /* iOS khong zoom khi focus */
+  .pose { grid-template-columns: repeat(4, 1fr); }
+  .batt { grid-template-columns: 1fr; gap: 10px; }
+  .soc-bar { height: 56px; }
+  .batt-grid { grid-template-columns: repeat(2, 1fr); }
+  .bt .spark { height: 22px; }
+  .row { gap: 6px; }
+  .shapes button { flex: 1 1 28%; }
+}
+@media (max-width: 420px) {
+  .pose { grid-template-columns: repeat(4, 1fr); font-size: 12px; }
+  .batt-grid { grid-template-columns: 1fr 1fr; }
+  .dpad { grid-template-columns: repeat(3, 54px); }
+  .dpad button { height: 54px; }
+  #joy { width: 130px; height: 130px; }
+}
+
+/* ---- pin thu gon tren di dong */
+.batt-toggle { display: none; font-size: 14px; padding: 2px 8px; margin-left: auto; }
+.batt-mini { display: none; }
+@media (max-width: 1000px) {
+  .batt-toggle { display: inline-block; }
+  .batt-card .h2-sub, .batt-card #battSerial { display: none; }
+  .batt-card .card-head { margin-bottom: 8px; }
+  /* che do gon (mac dinh): 1 hang duy nhat = thanh SoC + chuoi "V · A · °C" */
+  .batt-card:not(.expanded) { padding: 8px 12px; }
+  .batt-card:not(.expanded) .card-head { margin-bottom: 6px; }
+  .batt-card:not(.expanded) .batt { grid-template-columns: minmax(110px, 1fr) auto; gap: 10px; align-items: center; }
+  .batt-card:not(.expanded) .soc-bar { height: 26px; border-radius: 6px; }
+  .batt-card:not(.expanded) .soc-bar::after { top: 6px; height: 12px; width: 4px; right: -5px; }
+  .batt-card:not(.expanded) .soc-pct { font-size: 14px; }
+  .batt-card:not(.expanded) .soc-sub, .batt-card:not(.expanded) .batt-grid { display: none; }
+  .batt-card:not(.expanded) .batt-mini { display: block; font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 13px; color: var(--text); white-space: nowrap; }
+  .batt-card:not(.expanded) .batt-mini span { color: var(--muted); }
+  .batt-card.expanded .batt-toggle { transform: rotate(180deg); }
+}
+
+button.icon { display: inline-flex; align-items: center; justify-content: center; padding: 4px 6px; min-height: 0; line-height: 0; }
+button.icon:hover { color: var(--danger); }
+@media (max-width: 1000px) { button.icon { min-height: 32px; padding: 4px 8px; } }
+
+.soc-fill.chg { background: var(--accent2); background-image: repeating-linear-gradient(135deg, rgba(255,255,255,.18) 0 10px, transparent 10px 20px); background-size: 28px 28px; animation: chg 1s linear infinite; }
+@keyframes chg { to { background-position: 28px 0; } }
+.soc-fill.full { background: var(--accent); }
+.badge.chg { color: var(--accent2); border-color: var(--accent2); }

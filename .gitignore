@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# colcon (khong bao gio commit workspace build)
+build/
+install/
+log/
+
+# IDE / OS
+.vscode/
+.idea/
+*.swp
+.DS_Store
+
+# scratch
+*.log
+*.tmp

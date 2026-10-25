@@ -1,0 +1,26 @@
+[Unit]
+Description=Turtle Web (ROS 2 Foxy: Xvfb + turtlesim + battery_sim + Flask UI)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=__USER__
+Group=__USER__
+WorkingDirectory=__HOME__/ros2_ws
+Environment=HOME=__HOME__
+Environment=PORT=5000
+# ROS_DOMAIN_ID=0 mac dinh; doi o day neu may lab co nhieu he ROS
+# Environment=ROS_DOMAIN_ID=0
+ExecStart=__HOME__/ros2_ws/start_turtle_web.sh
+# ros2 launch tat cac node con sach khi nhan SIGINT
+KillSignal=SIGINT
+KillMode=mixed
+TimeoutStopSec=20
+Restart=on-failure
+RestartSec=3
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

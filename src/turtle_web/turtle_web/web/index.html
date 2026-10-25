@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#182033">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Turtle Control</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<header>
+  <h1>🐢 Turtle Control <span class="sub">ROS 2 Foxy · turtlesim</span></h1>
+  <div class="status"><span id="dot" class="dot"></span><span id="conn">Đang kết nối…</span></div>
+</header>
+
+<main>
+  <!-- Cot trai: pin + ban do -->
+  <div class="left">
+  <section class="card batt-card">
+    <div class="card-head">
+      <h2>Pin rùa <span class="h2-sub">· 48 V LiFePO4 16S</span></h2>
+      <span id="battSerial" class="badge">–</span>
+      <span id="battHealth" class="badge">–</span>
+      <button id="battToggle" class="ghost batt-toggle" title="Mở rộng / thu gọn">▾</button>
+    </div>
+    <div class="batt">
+      <div class="soc">
+        <div class="soc-bar"><div id="socFill" class="soc-fill"></div><span id="socPct" class="soc-pct">–</span></div>
+        <div class="soc-sub"><span id="socAh">–</span> · <span id="socEta">–</span></div>
+      </div>
+      <div id="battMini" class="batt-mini">–</div>
+      <div class="batt-grid">
+        <div class="bt"><span class="k">Điện áp</span><span class="v"><b id="bVolt">–</b> V</span><canvas id="spVolt" class="spark" width="120" height="26"></canvas></div>
+        <div class="bt"><span class="k">Dòng</span><span class="v"><b id="bCur">–</b> A</span><canvas id="spCur" class="spark" width="120" height="26"></canvas></div>
+        <div class="bt bt-extra"><span class="k">Công suất</span><span class="v"><b id="bPow">–</b> W</span></div>
+        <div class="bt"><span class="k">Nhiệt độ</span><span class="v"><b id="bTemp">–</b> °C</span><canvas id="spTemp" class="spark" width="120" height="26"></canvas></div>
+        <div class="bt bt-extra"><span class="k">Cell min / max</span><span class="v"><b id="bCell">–</b> V</span></div>
+      </div>
+    </div>
+  </section>
+  <section class="card map-card">
+    <div class="card-head">
+      <h2>MAP</h2>
+      <select id="turtleSel" title="Rùa đang chọn"></select>
+      <span id="renderer" class="badge" hidden>…</span>
+      <label class="chk"><input type="checkbox" id="trail" checked> Vẽ vết</label>
+      <button id="btnClearTrail" class="ghost icon" title="Xoá vết (bản đồ web + turtlesim /clear)" aria-label="Xoá vết">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v6M14 11v6"/></svg>
+      </button>
+    </div>
+    <div class="map-wrap">
+      <canvas id="map" width="560" height="560"></canvas>
+      <canvas id="overlay" width="560" height="560"></canvas>
+    </div>
+    <div class="pose">
+      <div><span class="k">x</span><span id="px" class="v">–</span></div>
+      <div><span class="k">y</span><span id="py" class="v">–</span></div>
+      <div><span class="k">θ</span><span id="pth" class="v">–</span></div>
+      <div><span class="k">v</span><span id="pv" class="v">–</span></div>
+      <div><span class="k">ω</span><span id="pw" class="v">–</span></div>
+      <div><span class="k" title="Tần số pose nhận từ ROS">Hz</span><span id="phz" class="v">–</span></div>
+      <div><span class="k" title="Khung hình / giây của bản đồ">fps</span><span id="pfps" class="v">–</span></div>
+    </div>
+    <div class="hint">Click: rùa xoay về hướng điểm đó rồi tiến thẳng tới (go-to-goal). Shift+Click: teleport. Space hoặc Dừng auto để huỷ.</div>
+  </section>
+  </div>
+
+  <!-- Cot phai -->
+  <div class="side">
+    <section class="card">
+      <h2>Hành động</h2>
+      <div class="row shapes">
+        <button data-shape="figure8" title="Lemniscate, đi qua vị trí hiện tại">Số 8</button>
+        <button data-shape="ellipse">Elip</button>
+        <button data-shape="circle">Tròn</button>
+        <button data-shape="square">Vuông</button>
+        <button data-shape="polygon" title="Số cạnh ngẫu nhiên 3–9 (khác vuông)">Đa giác</button>
+        <input type="number" id="sides" min="3" max="12" value="5" title="Số cạnh đa giác" style="width:3.2em" hidden>
+      </div>
+      <div class="row">
+        <label class="chk">Kích thước <input type="range" id="shapeSize" min="0.5" max="4.5" step="0.1" value="2" style="width:90px"> <b id="shapeSizeVal">2.0</b></label>
+        <label class="chk"><input type="checkbox" id="shapeLoop"> Lặp</label>
+        <button id="btnStopAuto" class="danger">Dừng auto</button>
+      </div>
+      <div class="row">
+        <button id="btnHome">Về giữa</button>
+        <button id="btnKill" class="danger">Kill rùa</button>
+      </div>
+      <div class="row">
+        <input id="spawnName" placeholder="tên rùa mới (trống = tự đặt)">
+        <button id="btnSpawn">Thêm rùa</button>
+      </div>
+    </section>
+
+
+    <section class="card">
+      <h2>Điều khiển</h2>
+      <div class="ctl">
+        <div class="dpad">
+          <button data-k="q" title="Tiến + xoay trái">↰</button>
+          <button data-k="w" title="Tiến (W / ↑)">▲</button>
+          <button data-k="e" title="Tiến + xoay phải">↱</button>
+          <button data-k="a" title="Xoay trái 5° mỗi lần nhấn (A / ←), giữ để xoay tiếp">◄</button>
+          <button data-k="x" class="stop" title="Dừng (Space)">■</button>
+          <button data-k="d" title="Xoay phải 5° mỗi lần nhấn (D / →), giữ để xoay tiếp">►</button>
+          <button data-k="z" title="Lùi + xoay trái">↲</button>
+          <button data-k="s" title="Lùi (S / ↓)">▼</button>
+          <button data-k="c" title="Lùi + xoay phải">↳</button>
+        </div>
+        <div class="joy-wrap">
+          <canvas id="joy" width="130" height="130"></canvas>
+          <div class="hint">Joystick: kéo thả</div>
+        </div>
+      </div>
+      <div class="sliders">
+        <label><span class="sl-name">Tốc độ thẳng</span><input type="range" id="lin" min="0.2" max="5" step="0.1" value="2"><span class="sl-val"><b id="linVal">2.0</b> m/s</span></label>
+        <label><span class="sl-name">Tốc độ góc</span><input type="range" id="ang" min="0.2" max="5" step="0.1" value="2"><span class="sl-val"><b id="angVal">2.0</b> rad/s</span></label>
+      </div>
+      <div class="hint">Bàn phím: WASD / mũi tên, Space dừng. Giữ phím để chạy liên tục.</div>
+    </section>
+
+    <section class="card" id="penCard" hidden>
+      <h2>Vết &amp; nền</h2>
+      <div class="row">
+        <label>Màu vết <input type="color" id="penColor" value="#b3b8ff"></label>
+        <label>Độ dày <input type="number" id="penWidth" min="1" max="20" value="2" style="width:4em"></label>
+        <label class="chk"><input type="checkbox" id="penOff"> Nhấc bút</label>
+        <button id="btnPen">Áp dụng</button>
+      </div>
+      <div class="row">
+        <label>Màu nền <input type="color" id="bgColor" value="#212445"></label>
+        <button id="btnBg">Đổi nền</button>
+      </div>
+    </section>
+
+    <section class="card log-card">
+      <div class="card-head"><h2>Log</h2><button id="btnClearLog" class="ghost">Xoá</button></div>
+      <pre id="log"></pre>
+    </section>
+  </div>
+</main>
+
+<script src="/static/gl.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>
