@@ -36,6 +36,7 @@ Mở `http://<ip-máy>:5000`. Chưa có ROS 2: xem [docs/01-cai-dat-ros2-foxy.md
 | 05 | [Bài tập](docs/05-bai-tap.md) | Từ dễ đến khó, có gợi ý |
 | 06 | [Kinh nghiệm và lỗi đã gặp](docs/06-kinh-nghiem-phat-trien.md) | 20 bài học rút ra khi làm dự án này |
 | 07 | [Xử lý sự cố](docs/07-xu-ly-su-co.md) | Triệu chứng, nguyên nhân, cách sửa |
+| 10 | [Định hướng AGV lidar](docs/10-dinh-huong-agv-lidar.md) | Dự án kế tiếp: hộp định vị gắn thêm, nhiều AGV chung bản đồ, so sánh lidar / AprilTag / UWB |
 | 90 | [Nhật ký phát triển](docs/90-nhat-ky-phat-trien.md) | Tiến độ thực tế theo ngày |
 
 Chi tiết API và tham số của package: [src/turtle_web/README.md](src/turtle_web/README.md).
