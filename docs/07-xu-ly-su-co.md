@@ -20,6 +20,7 @@
 | Sửa `.py` nhưng không có tác dụng | chưa restart service | `sudo systemctl restart turtle-web` |
 | Sửa js/css nhưng không có tác dụng | cache trình duyệt | tải lại cứng Ctrl/Cmd+Shift+R |
 | Truy cập từ máy khác không được | sai IP, hoặc firewall | `hostname -I`; `sudo ufw status`; `curl http://<ip>:5000` ngay trên máy lab |
+| Web lên nhưng báo `service /turtle1/set_pen khong san sang`, rùa không nhúc nhích (27/10/2026) | một tiến trình khác tắt/chiếm Xvfb `:99` (ví dụ script test AT-SPI), turtlesim mất X11 và chết; `ros2 launch` vẫn chạy nên `systemctl` báo *active* | `pgrep -af Xvfb` xem ai giữ `:99`, tắt tiến trình lạ rồi `sudo systemctl restart turtle-web`. Từ bản này launch đã bật `respawn` cho Xvfb và turtlesim; tiến trình khác cần Xvfb hãy dùng display khác (`:98`) |
 
 Lệnh chẩn đoán nhanh:
 

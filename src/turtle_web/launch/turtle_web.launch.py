@@ -25,10 +25,12 @@ def generate_launch_description():
         # --- headless: Xvfb truoc, turtlesim sau 1s voi DISPLAY=:99
         ExecuteProcess(condition=IfCondition(headless),
                        cmd=['Xvfb', XVFB_DISPLAY, '-screen', '0', '800x600x24', '-nolisten', 'tcp'],
-                       output='log'),
+                       output='log', respawn=True, respawn_delay=1.0),
         TimerAction(condition=IfCondition(headless), period=1.0, actions=[
             Node(package='turtlesim', executable='turtlesim_node', name='turtlesim', output='screen',
                  parameters=TURTLESIM_PARAMS,
+                 # respawn: neu Xvfb/turtlesim bi tat (vd tien trinh khac chiem :99) thi tu chay lai
+                 respawn=True, respawn_delay=2.0,
                  additional_env={'DISPLAY': XVFB_DISPLAY, 'QT_QPA_PLATFORM': 'xcb'}),
         ]),
 
