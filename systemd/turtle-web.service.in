@@ -17,7 +17,8 @@ ExecStart=__HOME__/ros2_ws/start_turtle_web.sh
 KillSignal=SIGINT
 KillMode=mixed
 TimeoutStopSec=20
-Restart=on-failure
+# always: ke ca ros2 launch thoat "sach" (vd bi SIGINT tu ngoai) van chay lai
+Restart=always
 RestartSec=3
 StandardOutput=journal
 StandardError=journal

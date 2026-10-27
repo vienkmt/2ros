@@ -8,7 +8,7 @@ và publish pose. Launch file tự khởi động `Xvfb :99` rồi đặt `DISPL
 
 Hai lỗi đã gặp:
 - Xvfb chưa kịp lên thì turtlesim đã chạy → `could not connect to display`. Fix: `TimerAction` 1 s.
-- Kill -9 để lại `/tmp/.X99-lock` → Xvfb lần sau không lên. `start_turtle_web.sh` xóa lock nếu không có tiến trình Xvfb.
+- Display `:99` là của turtle_web. `start_turtle_web.sh` lúc khởi động tắt mọi `Xvfb :99` đang chạy (của lần trước bị kill -9 hoặc của script khác), xóa `/tmp/.X99-lock`, rồi launch mới mở Xvfb. Xvfb và turtlesim có `respawn` trong launch, chết là tự chạy lại sau 1–2 s. Script khác cần Xvfb hãy dùng `:98`.
 
 ## Script khởi động
 
@@ -34,7 +34,7 @@ ExecStart=__HOME__/ros2_ws/start_turtle_web.sh
 KillSignal=SIGINT        # ros2 launch nhận Ctrl+C → tắt mọi node con sạch
 KillMode=mixed           # SIGINT cho tiến trình chính, SIGKILL phần còn sót sau timeout
 TimeoutStopSec=20
-Restart=on-failure
+Restart=always
 RestartSec=3
 [Install]
 WantedBy=multi-user.target
